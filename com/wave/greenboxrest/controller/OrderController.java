@@ -1,19 +1,16 @@
 package com.wave.greenboxrest.controller;
 
-import com.wave.greenboxrest.model.Item;
+import com.wave.greenboxrest.dto.PositionCreateDto;
 import com.wave.greenboxrest.model.Order;
-import com.wave.greenboxrest.model.OrderInfoJSON;
+import com.wave.greenboxrest.dto.OrderCreateDto;
 import com.wave.greenboxrest.model.Position;
 import com.wave.greenboxrest.repository.ItemRepository;
 import com.wave.greenboxrest.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/orders")
@@ -40,13 +37,19 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public void createOrder(@RequestBody OrderInfoJSON orderInfoJSON){
+    public void createOrder(@RequestBody OrderCreateDto orderDto){
         List<Position> positions = new LinkedList<>();
-        for(Map.Entry<Long, Double> entry: orderInfoJSON.positions.entrySet()){
-            Position position = new Position(itemRepository.findById(entry.getKey()).get(), entry.getValue());
+        Order order = new Order();
+        for(PositionCreateDto positionDto: orderDto.positions){
+            Position position =
+                    new Position(itemRepository.findById(positionDto.itemId).get(), positionDto.weight);
+            position.setOrder(order);
             positions.add(position);
         }
-        Order order = new Order(orderInfoJSON.personName, orderInfoJSON.address, orderInfoJSON.phoneNumber, positions);
+        order.setPersonName(orderDto.personName);
+        order.setAddress(orderDto.address);
+        order.setPhoneNumber(orderDto.phoneNumber);
+        order.setPositions(positions);
         orderRepository.saveAndFlush(order);
     }
 
@@ -54,6 +57,5 @@ public class OrderController {
     public void deleteOrder(@PathVariable Long id){
         orderRepository.deleteById(id);
     }
-
 
 }

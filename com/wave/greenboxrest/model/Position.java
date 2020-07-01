@@ -1,7 +1,6 @@
 package com.wave.greenboxrest.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -10,12 +9,12 @@ import javax.validation.constraints.NotNull;
 public class Position {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id; //SHOULD BE A COMPOSITE KEY
 
-    @NotNull
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @NotNull
@@ -23,7 +22,7 @@ public class Position {
     private Item item;
 
     @NotEmpty
-    private Double weight; //BIGDECIMAL?
+    private Double weight;
 
     public Position() {
     }
@@ -35,6 +34,14 @@ public class Position {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Order getOrder() {
@@ -56,4 +63,9 @@ public class Position {
     public void setWeight(Double weight) {
         this.weight = weight;
     }
+
+    public Double calculateSubtotal(){
+        return item.getPrice() * weight;
+    }
+
 }

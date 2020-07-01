@@ -1,7 +1,10 @@
 package com.wave.greenboxrest.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity(name="orders")
@@ -22,17 +25,10 @@ public class Order {
 
     private String orderComment;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Position> positions;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Position> positions = new LinkedList<>();
 
     public Order() {
-    }
-
-    public Order(@Size(min = 3, max = 50, message = "Must be 3-50 characters") String personName, @Size(min = 10, message = "Your address is too short") String address, @Size(min = 9, max = 9, message = "Must be 9 digits long") String phoneNumber, List<Position> positions) {
-        this.personName = personName;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.positions = positions;
     }
 
     public Long getId() {
@@ -79,8 +75,9 @@ public class Order {
         this.positions = positions;
     }
 
+    @JsonProperty
     public Double calculateTotalPrice(){
-        return 0.0;
+        return positions.stream().mapToDouble(Position::calculateSubtotal).sum();
     }
 
 }
