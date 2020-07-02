@@ -75,7 +75,7 @@ public class Order {
         this.positions = positions;
     }
 
-    @JsonProperty
+    @JsonProperty("totalPrice")
     public Double calculateTotalPrice(){
         return positions.stream().mapToDouble(Position::calculateSubtotal).sum();
     }

@@ -1,6 +1,8 @@
 package com.wave.greenboxrest.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -18,7 +20,7 @@ public class Position {
     private Order order;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private Item item;
 
     @NotEmpty
@@ -64,6 +66,7 @@ public class Position {
         this.weight = weight;
     }
 
+    @JsonProperty("subtotalPrice")
     public Double calculateSubtotal(){
         return item.getPrice() * weight;
     }
