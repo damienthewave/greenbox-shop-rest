@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name="orders")
 public class Order {
@@ -26,7 +26,7 @@ public class Order {
     private String orderComment;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<Position> positions = new LinkedList<>();
+    private Set<Position> positions = new HashSet<>();
 
     public Order() {
     }
@@ -67,11 +67,11 @@ public class Order {
         this.orderComment = comment;
     }
 
-    public List<Position> getPositions() {
+    public Set<Position> getPositions() {
         return positions;
     }
 
-    public void setPositions(List<Position> positions) {
+    public void setPositions(Set<Position> positions) {
         this.positions = positions;
     }
 

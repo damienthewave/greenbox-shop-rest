@@ -9,8 +9,9 @@ import com.wave.greenboxrest.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/orders")
@@ -38,7 +39,7 @@ public class OrderController {
 
     @PostMapping("/create")
     public void createOrder(@RequestBody OrderCreateDto orderDto){
-        List<Position> positions = new LinkedList<>();
+        Set<Position> positions = new HashSet<>();
         Order order = new Order();
         for(PositionCreateDto positionDto: orderDto.positions){
             Position position =
