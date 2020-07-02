@@ -10,14 +10,14 @@ import javax.validation.constraints.NotNull;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull
     private String name;
 
     @NotNull
-    private Double price; //BIGDECIMAL?
+    private Double price;
 
     private String description;
 
@@ -55,5 +55,9 @@ public class Item {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
