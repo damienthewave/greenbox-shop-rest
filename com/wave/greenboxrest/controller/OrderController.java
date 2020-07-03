@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/orders")
@@ -27,9 +28,18 @@ public class OrderController {
         this.itemRepository = itemRepository;
     }
 
-    @GetMapping
-    public List<Order> getOrders() {
+    @GetMapping("/all")
+    public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    @GetMapping
+    public List<Order> getNotCompletedOrders() {
+        return orderRepository
+                .findAll()
+                .stream()
+                .filter(Order::isCompleted)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

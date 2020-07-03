@@ -29,7 +29,7 @@ public class Position {
     public Position() {
     }
 
-    public Position(Order order, Item item,  Double weight) {
+    public Position(Order order, Item item, Double weight) {
         this.order = order;
         this.item = item;
         this.weight = weight;
