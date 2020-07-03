@@ -43,8 +43,7 @@ public class OrderController {
         Order order = new Order();
         for(PositionCreateDto positionDto: orderDto.positions){
             Position position =
-                    new Position(itemRepository.findById(positionDto.itemId).get(), positionDto.weight);
-            position.setOrder(order);
+                    new Position(order, itemRepository.findById(positionDto.itemId).get(), positionDto.weight);
             positions.add(position);
         }
         order.setPersonName(orderDto.personName);

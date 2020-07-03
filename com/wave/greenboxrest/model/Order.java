@@ -27,7 +27,7 @@ public class Order {
 
     private String orderComment;
 
-    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<Position> positions = new HashSet<>();
 
     public Order() {

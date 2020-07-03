@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Entity(name = "positions")
 public class Position {
@@ -14,14 +13,13 @@ public class Position {
     private PositionId id;
 
     @JsonIgnore
-    @NotNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     @MapsId("orderId")
     private Order order;
 
-    @NotNull
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "item_id")
     @MapsId("itemId")
     private Item item;
 
@@ -31,9 +29,11 @@ public class Position {
     public Position() {
     }
 
-    public Position(@NotNull Item item, @NotEmpty Double weight) {
+    public Position(Order order, Item item,  Double weight) {
+        this.order = order;
         this.item = item;
         this.weight = weight;
+        this.id = new PositionId(order.getId(), item.getId());
     }
 
     public PositionId getId() {
