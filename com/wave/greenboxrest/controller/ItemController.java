@@ -2,11 +2,9 @@ package com.wave.greenboxrest.controller;
 
 import com.wave.greenboxrest.model.Item;
 import com.wave.greenboxrest.repository.ItemRepository;
-import com.wave.greenboxrest.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController

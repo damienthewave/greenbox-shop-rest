@@ -5,22 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Entity(name = "positions")
 public class Position {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id; //SHOULD BE A COMPOSITE KEY
+    @EmbeddedId
+    private PositionId id;
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
+    @MapsId("orderId")
     private Order order;
 
-    @NotNull
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    @MapsId("itemId")
     private Item item;
 
     @NotEmpty
@@ -29,16 +29,18 @@ public class Position {
     public Position() {
     }
 
-    public Position(@NotNull Item item, @NotEmpty Double weight) {
+    public Position(Order order, Item item,  Double weight) {
+        this.order = order;
         this.item = item;
         this.weight = weight;
+        this.id = new PositionId(order.getId(), item.getId());
     }
 
-    public Long getId() {
+    public PositionId getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(PositionId id) {
         this.id = id;
     }
 

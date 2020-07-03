@@ -35,6 +35,10 @@ public class Order {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getPersonName() {
         return personName;
     }
@@ -77,7 +81,9 @@ public class Order {
 
     @JsonProperty("totalPrice")
     public Double calculateTotalPrice(){
-        return positions.stream().mapToDouble(Position::calculateSubtotal).sum();
+        return positions.stream()
+                .mapToDouble(Position::calculateSubtotal)
+                .sum();
     }
 
 }

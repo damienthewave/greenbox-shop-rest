@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 
 @Entity(name = "items")
 public class Item {
@@ -13,18 +12,16 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     private String name;
 
-    @NotNull
-    private Double price; //BIGDECIMAL?
+    private Double price;
 
     private String description;
 
     public Item() {
     }
 
-    public Item(@NotNull String name, @NotNull Double price) {
+    public Item(String name, Double price) {
         this.name = name;
         this.price = price;
     }
@@ -55,5 +52,9 @@ public class Item {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
