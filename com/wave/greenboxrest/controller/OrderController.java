@@ -1,6 +1,7 @@
 package com.wave.greenboxrest.controller;
 
 import com.wave.greenboxrest.dto.PositionCreateDto;
+import com.wave.greenboxrest.model.Item;
 import com.wave.greenboxrest.model.Order;
 import com.wave.greenboxrest.dto.OrderCreateDto;
 import com.wave.greenboxrest.model.Position;
@@ -38,7 +39,7 @@ public class OrderController {
         return orderRepository
                 .findAll()
                 .stream()
-                .filter(Order::isCompleted)
+                .filter(o -> !o.isCompleted())
                 .collect(Collectors.toList());
     }
 
@@ -52,14 +53,22 @@ public class OrderController {
         Set<Position> positions = new HashSet<>();
         Order order = new Order();
         for(PositionCreateDto positionDto: orderDto.positions){
+            Item item = itemRepository.findById(positionDto.itemId).get(); //orElseThrow
             Position position =
-                    new Position(order, itemRepository.findById(positionDto.itemId).get(), positionDto.weight);
+                    new Position(order, item, positionDto.weight);
             positions.add(position);
         }
         order.setPersonName(orderDto.personName);
         order.setAddress(orderDto.address);
         order.setPhoneNumber(orderDto.phoneNumber);
         order.setPositions(positions);
+        orderRepository.saveAndFlush(order);
+    }
+
+    @PatchMapping("/complete/{id}")
+    public void completeOrder(@PathVariable("id") Long id) {
+        Order order = orderRepository.findById(id).get();
+        order.setCompleted(true);
         orderRepository.saveAndFlush(order);
     }
 

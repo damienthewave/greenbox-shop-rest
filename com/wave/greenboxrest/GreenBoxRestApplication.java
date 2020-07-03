@@ -7,6 +7,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/*
+* TODO
+*  1. Entities (Order, Item)
+*  2. Controllers
+*  3. Join Entity (Position)
+*  4. Map Order->Position->Item
+*  6. Cascade deletion on order->positions
+*  5. Composite key in Position class
+*  6. Store date in Order class
+*  7. Complete order
+*  8. Throw an error when item/order not found from repository
+*  9. Response Entities
+*  10.
+*/
+
 @SpringBootApplication
 public class GreenBoxRestApplication {
 
