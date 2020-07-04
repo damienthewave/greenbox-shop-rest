@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 @Entity(name = "positions")
 public class Position {
@@ -34,10 +37,6 @@ public class Position {
         this.id = new PositionId(order.getId(), item.getId());
     }
 
-    public PositionId getId() {
-        return id;
-    }
-
     public void setId(PositionId id) {
         this.id = id;
     }
@@ -64,7 +63,11 @@ public class Position {
 
     @JsonProperty("subtotalPrice")
     public Double calculateSubtotal(){
-        return item.getPrice() * weight;
+        var price = BigDecimal
+                .valueOf(item.getPrice())
+                .multiply(BigDecimal.valueOf(weight))
+                .round(new MathContext(3, RoundingMode.DOWN)); //TODO CORRECT THE ROUNDING
+        return price.doubleValue();
     }
 
 }

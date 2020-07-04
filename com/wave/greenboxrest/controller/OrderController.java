@@ -59,7 +59,6 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Order with a given id was not found.");
         }
-
     }
 
     @PostMapping("/create")
