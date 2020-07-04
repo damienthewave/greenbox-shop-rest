@@ -1,6 +1,5 @@
 package com.wave.greenboxrest.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -12,7 +11,6 @@ public class Position {
     @EmbeddedId
     private PositionId id;
 
-    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     @MapsId("orderId")
@@ -46,10 +44,6 @@ public class Position {
 
     public void setOrder(Order order) {
         this.order = order;
-    }
-
-    public Order getOrder() {
-        return order;
     }
 
     public Item getItem() {

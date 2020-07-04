@@ -17,9 +17,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 *  5. Composite key in Position class
 *  6. Store date in Order class
 *  7. Complete order
-*  8. Throw an error when item/order not found from repository
-*  9. Response Entities
-*  10.
+*  8. Response Entities
+*  9. Throw and handle errors when item/order not found from repository
+*  10. Correct calculation errors, round prices
+*  11. Create and return DTOs
+*  12.
 */
 
 @SpringBootApplication
@@ -30,7 +32,7 @@ public class GreenBoxRestApplication {
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
+    public WebMvcConfigurer configureCors() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
