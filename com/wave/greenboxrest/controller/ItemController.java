@@ -1,7 +1,7 @@
 package com.wave.greenboxrest.controller;
 
 import com.wave.greenboxrest.model.Item;
-import com.wave.greenboxrest.repository.ItemRepository;
+import com.wave.greenboxrest.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -15,26 +15,25 @@ import java.net.URI;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemRepository itemRepository;
+    private final ItemService itemService;
 
     final String BASE_URI = "http://localhost:8080/items";
 
     @Autowired
-    public ItemController(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
     }
 
     @GetMapping
     public ResponseEntity<?> getItems() {
-        return ResponseEntity.ok(itemRepository.findAll());
+        return ResponseEntity.ok(
+                itemService.getAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getItem(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(itemRepository
-                    .findById(id)
-                    .orElseThrow(EntityNotFoundException::new));
+            return ResponseEntity.ok(itemService.getItem(id));
         }
         catch (EntityNotFoundException ex){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -43,16 +42,22 @@ public class ItemController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createItem(@RequestBody Item item){
-        itemRepository.saveAndFlush(item);
-        var uri = String.format(BASE_URI + "/%d", item.getId());
-        return ResponseEntity.created(URI.create(uri)).body(item);
+    public ResponseEntity<?> createItem(@RequestBody Item newItem){
+        try{
+            var item = itemService.create(newItem);
+            var uri = String.format(BASE_URI + "/%d", item.getId());
+            return ResponseEntity.created(URI.create(uri)).body(item);
+        }
+        catch (Exception ex){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("There were problems creating this item. Make sure the name is unique.");
+        }
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteItem(@PathVariable Long id){
         try{
-            itemRepository.deleteById(id);
+            itemService.delete(id);
             return ResponseEntity.ok("The item has been deleted.");
         }
         catch (EmptyResultDataAccessException ex){
