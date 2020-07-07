@@ -3,6 +3,7 @@ package com.wave.greenboxrest.controller;
 import com.wave.greenboxrest.dto.PositionCreateDto;
 import com.wave.greenboxrest.model.Order;
 import com.wave.greenboxrest.dto.OrderCreateDto;
+import com.wave.greenboxrest.model.SessionSummary;
 import com.wave.greenboxrest.model.Position;
 import com.wave.greenboxrest.repository.ItemRepository;
 import com.wave.greenboxrest.repository.OrderRepository;
@@ -82,6 +83,7 @@ public class OrderController {
         order.setAddress(orderDto.address);
         order.setPhoneNumber(orderDto.phoneNumber);
         order.setPositions(positions);
+        order.setOrderComment(orderDto.orderComment);
         orderRepository.saveAndFlush(order);
         String uri = String.format(BASE_URI + "/%d", order.getId());
         return ResponseEntity.created(URI.create(uri)).body(order);
@@ -115,6 +117,17 @@ public class OrderController {
                     .status(HttpStatus.NOT_FOUND)
                     .body("Order with a given id was not found.");
         }
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<?> getOrdersSummary(){
+        var orders = orderRepository
+                .findAll()
+                .stream()
+                .filter(o -> !o.isCompleted())
+                .collect(Collectors.toList());
+        var summary = new SessionSummary().from(orders);
+        return ResponseEntity.ok(summary);
     }
 
 }
