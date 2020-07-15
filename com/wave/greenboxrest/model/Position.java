@@ -25,15 +25,15 @@ public class Position {
     private Item item;
 
     @NotEmpty
-    private Double weight;
+    private Double amount;
 
     public Position() {
     }
 
-    public Position(Order order, Item item, Double weight) {
+    public Position(Order order, Item item, Double amount) {
         this.order = order;
         this.item = item;
-        this.weight = weight;
+        this.amount = amount;
         this.id = new PositionId(order.getId(), item.getId());
     }
 
@@ -53,20 +53,20 @@ public class Position {
         this.item = item;
     }
 
-    public Double getWeight() {
-        return weight;
+    public Double getAmount() {
+        return amount;
     }
 
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     @JsonProperty("subtotalPrice")
     public Double calculateSubtotal(){
         var price = BigDecimal
                 .valueOf(item.getPrice())
-                .multiply(BigDecimal.valueOf(weight))
-                .round(new MathContext(3, RoundingMode.DOWN)); //TODO CORRECT THE ROUNDING
+                .multiply(BigDecimal.valueOf(amount))
+                .round(new MathContext(3, RoundingMode.DOWN)); //TODO CORRECT ROUNDING
         return price.doubleValue();
     }
 

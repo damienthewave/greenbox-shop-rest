@@ -94,7 +94,7 @@ public class OrderController {
             return ResponseEntity.ok("No new orders.");
         }
         else{
-            var summary = new SessionSummary().from(orders);
+            var summary = SessionSummary.from(orders);
             return ResponseEntity.ok(summary);
         }
     }

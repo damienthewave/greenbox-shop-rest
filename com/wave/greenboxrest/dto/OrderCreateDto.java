@@ -6,4 +6,4 @@ public class OrderCreateDto {
     public String address;
     public String orderComment;
     public PositionCreateDto[] positions;
-}
+}   

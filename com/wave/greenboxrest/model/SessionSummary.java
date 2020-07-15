@@ -10,24 +10,24 @@ public class SessionSummary {
 
     private final Map<String, SummaryDetail> items = new HashMap<>();
 
-    public SessionSummary() {
-    }
-
-    public SessionSummary from(Collection<Order> orders){
-        assignToMap(orders);
-        return this;
+    public static SessionSummary from(Collection<Order> orders){
+        var summary = new SessionSummary();
+        summary.assignToMap(orders);
+        return summary;
     }
 
     private void assignToMap(Collection<Order> orders){
         for(Order order: orders){
             for(Position position: order.getPositions()){
-                String item = position.getItem().getName();
+                var item = position.getItem().getName();
                 if(items.containsKey(item)){
                     var detail = items.get(item);
                     detail.add(position);
                 }
                 else{
-                    var detail = new SummaryDetail(position.getWeight(), position.calculateSubtotal());
+                    var detail = new SummaryDetail(position.getAmount(),
+                            position.calculateSubtotal(),
+                            position.getItem().getCollectionType());
                     items.put(item, detail);
                 }
             }
@@ -50,25 +50,29 @@ public class SessionSummary {
 class SummaryDetail {
 
     @JsonProperty
-    private double weight;
+    private double amount;
 
     @JsonProperty
     private double price;
 
+    @JsonProperty
+    private ItemCollectionType collectionType;
+
     public SummaryDetail() {
     }
 
-    public SummaryDetail(double weight, double price) {
-        this.weight = weight;
+    public SummaryDetail(double amount, double price, ItemCollectionType collectionType) {
+        this.amount = amount;
         this.price = price;
+        this.collectionType = collectionType;
     }
 
-    public double getWeight() {
-        return weight;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public double getPrice() {
@@ -79,8 +83,16 @@ class SummaryDetail {
         this.price = price;
     }
 
+    public ItemCollectionType getCollectionType() {
+        return collectionType;
+    }
+
+    public void setCollectionType(ItemCollectionType collectionType) {
+        this.collectionType = collectionType;
+    }
+
     public void add(Position position){
-        weight += position.getWeight();
+        amount += position.getAmount();
         price += position.calculateSubtotal();
     }
 

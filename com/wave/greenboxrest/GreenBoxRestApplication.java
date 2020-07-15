@@ -20,8 +20,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 *  8. Response Entities
 *  9. Throw and handle errors when item/order not found from repository
 *  10. Correct calculation errors, round prices
-*  11. Create and return DTOs
-*  12.
+*  11. Create services
+*  12. Implement CollectionType{WEIGHT, AMOUNT, BOTH}
+*  13. Create and return DTOs
 */
 
 @SpringBootApplication
@@ -36,7 +37,7 @@ public class GreenBoxRestApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/orders").allowedOrigins("http://localhost:4200");
+                registry.addMapping("/**");
             }
         };
     }

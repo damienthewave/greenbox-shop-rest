@@ -44,8 +44,7 @@ public class OrderService {
         for(PositionCreateDto positionDto: orderDto.positions){
             var item = itemRepository.findById(positionDto.itemId)
                     .orElseThrow(EntityNotFoundException::new);
-            Position position =
-                    new Position(order, item, positionDto.weight);
+            var position = new Position(order, item, positionDto.amount);
             positions.add(position);
         }
         order.setPersonName(orderDto.personName);
