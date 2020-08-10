@@ -3,6 +3,7 @@ package com.wave.greenboxrest.controller;
 import com.wave.greenboxrest.dto.OrderCreateDto;
 import com.wave.greenboxrest.model.SessionSummary;
 import com.wave.greenboxrest.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -19,14 +21,10 @@ public class OrderController {
 
     final String BASE_URI = "http://localhost:8080/orders";
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
     @GetMapping("/all")
     public ResponseEntity<?> getAllOrders() {
         return ResponseEntity.ok(
-                orderService.getAll());
+                orderService.getAllOrders());
     }
 
     @GetMapping
@@ -63,7 +61,7 @@ public class OrderController {
     @PatchMapping("/complete/{id}")
     public ResponseEntity<?> completeOrder(@PathVariable("id") Long id) {
         try{
-            var order = orderService.complete(id);
+            var order = orderService.completeOrder(id);
             String uri = String.format(BASE_URI + "/%d", id);
             return ResponseEntity.created(URI.create(uri)).body(order);
         }
@@ -74,10 +72,10 @@ public class OrderController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Long id){
         try{
-            orderService.delete(id);
+            orderService.deleteOrder(id);
             return ResponseEntity.ok("The order has been deleted.");
         }
         catch (EmptyResultDataAccessException ex){
@@ -90,13 +88,11 @@ public class OrderController {
     @GetMapping("/summary")
     public ResponseEntity<?> getOrdersSummary(){
         var orders = orderService.getNotCompleted();
-        if(orders.isEmpty()){
+        if(orders.isEmpty()) {
             return ResponseEntity.ok("No new orders.");
         }
-        else{
-            var summary = SessionSummary.from(orders);
-            return ResponseEntity.ok(summary);
-        }
+        var summary = SessionSummary.from(orders);
+        return ResponseEntity.ok(summary);
     }
 
 }

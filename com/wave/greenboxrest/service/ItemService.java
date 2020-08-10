@@ -2,21 +2,19 @@ package com.wave.greenboxrest.service;
 
 import com.wave.greenboxrest.model.Item;
 import com.wave.greenboxrest.repository.ItemRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    public ItemService(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
-    }
-
-    public List<Item> getAll(){
+    public List<Item> getAllItems(){
         return itemRepository.findAll();
     }
 
@@ -25,11 +23,11 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
-    public Item create(Item item){
+    public Item createItem(Item item){
         return itemRepository.saveAndFlush(item);
     }
 
-    public void delete(Long id){
+    public void deleteItem(Long id){
         itemRepository.deleteById(id);
     }
 

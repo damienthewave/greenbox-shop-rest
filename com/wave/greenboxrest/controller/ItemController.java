@@ -2,7 +2,7 @@ package com.wave.greenboxrest.controller;
 
 import com.wave.greenboxrest.model.Item;
 import com.wave.greenboxrest.service.ItemService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -19,15 +20,10 @@ public class ItemController {
 
     final String BASE_URI = "http://localhost:8080/items";
 
-    @Autowired
-    public ItemController(ItemService itemService) {
-        this.itemService = itemService;
-    }
-
     @GetMapping
     public ResponseEntity<?> getItems() {
         return ResponseEntity.ok(
-                itemService.getAll());
+                itemService.getAllItems());
     }
 
     @GetMapping("/{id}")
@@ -44,7 +40,7 @@ public class ItemController {
     @PostMapping("/create")
     public ResponseEntity<?> createItem(@RequestBody Item newItem){
         try{
-            var item = itemService.create(newItem);
+            var item = itemService.createItem(newItem);
             var uri = String.format(BASE_URI + "/%d", item.getId());
             return ResponseEntity.created(URI.create(uri)).body(item);
         }
@@ -54,10 +50,10 @@ public class ItemController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteItem(@PathVariable Long id){
         try{
-            itemService.delete(id);
+            itemService.deleteItem(id);
             return ResponseEntity.ok("The item has been deleted.");
         }
         catch (EmptyResultDataAccessException ex){
