@@ -18,6 +18,10 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
+    public List<Item> getAvailableItems(){
+        return itemRepository.getAllByIsAvailable(true);
+    }
+
     public Item getItem(Long id){
         return itemRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
@@ -27,8 +31,10 @@ public class ItemService {
         return itemRepository.saveAndFlush(item);
     }
 
-    public void deleteItem(Long id){
-        itemRepository.deleteById(id);
+    public Item changeAvailability(Long id, Boolean isAvailable){
+        Item item = itemRepository.findById(id).
+                orElseThrow(EntityNotFoundException::new);
+        item.setAvailable(isAvailable);
+        return itemRepository.saveAndFlush(item);
     }
-
 }

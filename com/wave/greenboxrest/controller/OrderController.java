@@ -1,6 +1,7 @@
 package com.wave.greenboxrest.controller;
 
 import com.wave.greenboxrest.dto.OrderCreateDto;
+import com.wave.greenboxrest.model.Order;
 import com.wave.greenboxrest.model.SessionSummary;
 import com.wave.greenboxrest.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -54,14 +55,14 @@ public class OrderController {
         }
         catch (EntityNotFoundException ex){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Item with a given id was not found.");
+                    .body(ex.getMessage());
         }
     }
 
     @PatchMapping("/complete/{id}")
     public ResponseEntity<?> completeOrder(@PathVariable("id") Long id) {
         try{
-            var order = orderService.completeOrder(id);
+            Order order = orderService.completeOrder(id);
             String uri = String.format(BASE_URI + "/%d", id);
             return ResponseEntity.created(URI.create(uri)).body(order);
         }

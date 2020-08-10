@@ -3,7 +3,6 @@ package com.wave.greenboxrest.controller;
 import com.wave.greenboxrest.model.Item;
 import com.wave.greenboxrest.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +20,17 @@ public class ItemController {
     final String BASE_URI = "http://localhost:8080/items";
 
     @GetMapping
-    public ResponseEntity<?> getItems() {
+    public ResponseEntity<?> getAvailableItems() {
+        return ResponseEntity.ok(
+                itemService.getAvailableItems());
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllItems() {
         return ResponseEntity.ok(
                 itemService.getAllItems());
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getItem(@PathVariable Long id) {
@@ -50,13 +56,14 @@ public class ItemController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long id){
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> changeAvailability(@PathVariable Long id,
+                                                @RequestParam Boolean isAvailable){
         try{
-            itemService.deleteItem(id);
-            return ResponseEntity.ok("The item has been deleted.");
+            Item item = itemService.changeAvailability(id, isAvailable);
+            return ResponseEntity.ok(item);
         }
-        catch (EmptyResultDataAccessException ex){
+        catch (EntityNotFoundException ex){
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Item with given id was not found.");

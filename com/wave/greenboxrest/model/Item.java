@@ -1,6 +1,5 @@
 package com.wave.greenboxrest.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //@JsonProperty
     @NotEmpty
     @Column(unique = true)
     private String name;
@@ -30,6 +28,8 @@ public class Item {
     private Double price;
 
     private String description;
+
+    private boolean isAvailable = true;
 
     @NotNull
     private ItemCollectionType collectionType;

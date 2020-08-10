@@ -2,6 +2,7 @@ package com.wave.greenboxrest.service;
 
 import com.wave.greenboxrest.dto.OrderCreateDto;
 import com.wave.greenboxrest.dto.PositionCreateDto;
+import com.wave.greenboxrest.model.Item;
 import com.wave.greenboxrest.model.Order;
 import com.wave.greenboxrest.model.Position;
 import com.wave.greenboxrest.repository.ItemRepository;
@@ -44,8 +45,12 @@ public class OrderService {
                 .orderComment(orderDto.orderComment)
                 .build();
         for(PositionCreateDto positionDto: orderDto.positions){
-            var item = itemRepository.findById(positionDto.itemId)
+            Item item = itemRepository.findById(positionDto.itemId)
                     .orElseThrow(EntityNotFoundException::new);
+            if(!item.isAvailable()){
+                throw new EntityNotFoundException("Item with id " +
+                        positionDto.itemId + " is not available");
+            }
             var position = new Position(order, item, positionDto.amount);
             positions.add(position);
         }
