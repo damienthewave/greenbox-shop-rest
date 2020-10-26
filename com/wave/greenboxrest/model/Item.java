@@ -31,7 +31,6 @@ public class Item {
 
     private boolean isAvailable = true;
 
-    @NotNull
     private ItemCollectionType collectionType;
 
 }
