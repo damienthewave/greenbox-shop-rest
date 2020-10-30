@@ -1,20 +1,15 @@
-#FROM maven:3.6.3-jdk-8-slim AS build
-#RUN mkdir -p /workspace
-#WORKDIR /workspace
-#COPY pom.xml /workspace
-#COPY src /workspace/src
-#RUN mvn -f pom.xml clean package
-#RUN mvn package
-
-FROM maven:3.5.2-jdk-8-alpine AS MAVEN_TOOL_CHAIN
-COPY pom.xml /tmp/
-COPY src /tmp/src/
-WORKDIR /tmp/
-RUN mvn package
+#https://stackoverflow.com/questions/27767264/how-to-dockerize-maven-project-and-how-many-ways-to-accomplish-it
+#FROM maven:3.6.3-openjdk-11 AS build
+#COPY src /usr/src/app/src
+#COPY pom.xml /usr/src/app
+#RUN mvn -f /usr/src/app/pom.xml clean package
+#FROM gcr.io/distroless/java
+#COPY --from=build /usr/src/app/target/helloworld-1.0.0-SNAPSHOT.jar /usr/app/helloworld-1.0.0-SNAPSHOT.jar
+#EXPOSE 8080
+#ENTRYPOINT ["java","-jar","/usr/app/helloworld-1.0.0-SNAPSHOT.jar"]
 
 FROM openjdk:11-jdk
-COPY --from=MAVEN_TOOL_CHAIN /workspace/target*.jar app.jar
 EXPOSE 8080
-#ARG JAR_FILE=target/*.jar
+ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
