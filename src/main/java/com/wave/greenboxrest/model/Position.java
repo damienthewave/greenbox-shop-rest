@@ -44,8 +44,7 @@ public class Position {
 
     @JsonProperty("subtotalPrice")
     public Double calculateSubtotal(){
-        Double price = item.getPrice();
-        return BigDecimal.valueOf(price)
+        return BigDecimal.valueOf(item.getPrice())
                 .multiply(BigDecimal.valueOf(amount))
                 .setScale(2, RoundingMode.HALF_UP)
                 .doubleValue();

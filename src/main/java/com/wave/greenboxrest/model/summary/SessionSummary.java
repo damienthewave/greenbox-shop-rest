@@ -39,7 +39,7 @@ public class SessionSummary {
     }
 
     @JsonProperty("totalPrice")
-    public double calculateTotalPrice(){
+    public double calculateTotalPrice() {
         return collectedItems
                 .stream()
                 .map(SummaryElement::getPrice)

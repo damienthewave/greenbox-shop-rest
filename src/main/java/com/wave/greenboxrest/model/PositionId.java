@@ -10,7 +10,6 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 @Embeddable
 public class PositionId implements Serializable {
 

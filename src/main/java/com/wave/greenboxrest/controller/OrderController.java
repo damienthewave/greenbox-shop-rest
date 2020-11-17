@@ -3,7 +3,6 @@ package com.wave.greenboxrest.controller;
 import com.wave.greenboxrest.dto.OrderCreateDto;
 import com.wave.greenboxrest.model.Order;
 import com.wave.greenboxrest.model.summary.SessionSummary;
-import com.wave.greenboxrest.model.summary.SummaryElement;
 import com.wave.greenboxrest.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import java.net.URI;
-import java.util.Collection;
 
 @RequiredArgsConstructor
 @RestController

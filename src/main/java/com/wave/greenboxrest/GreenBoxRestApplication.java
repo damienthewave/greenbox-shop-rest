@@ -10,5 +10,4 @@ public class GreenBoxRestApplication {
         SpringApplication.run(GreenBoxRestApplication.class, args);
     }
 
-
 }
