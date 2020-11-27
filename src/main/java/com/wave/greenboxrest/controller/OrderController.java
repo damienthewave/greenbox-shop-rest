@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 
+@CrossOrigin
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/orders")
