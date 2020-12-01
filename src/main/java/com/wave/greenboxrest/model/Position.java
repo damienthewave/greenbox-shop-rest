@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -32,7 +34,7 @@ public class Position {
     @MapsId("itemId")
     private Item item;
 
-    @NotEmpty
+    @Positive
     private Double amount;
 
     public Position(Order order, Item item, Double amount) {

@@ -16,20 +16,17 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name="orders")
+@Entity(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 3, max = 50, message = "Must be 3-50 characters long")
     private String personName;
 
-    @Size(min = 5, message = "Your address is too short")
     private String address;
 
-    @Size(min = 9, max = 9, message = "Must be 9 digits long")
     private String phoneNumber;
 
     private String orderComment;
@@ -43,7 +40,7 @@ public class Order {
     private Set<Position> positions = new HashSet<>();
 
     @JsonProperty("totalPrice")
-    public Double calculateTotalPrice(){
+    public Double calculateTotalPrice() {
         return positions.stream()
                 .map(Position::calculateSubtotal)
                 .map(BigDecimal::valueOf)
