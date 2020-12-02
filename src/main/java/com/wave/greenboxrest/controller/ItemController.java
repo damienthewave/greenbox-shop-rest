@@ -5,9 +5,12 @@ import com.wave.greenboxrest.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.net.URI;
 
 @RequiredArgsConstructor
@@ -31,26 +34,26 @@ public class ItemController {
                 itemService.getAllItems());
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getItem(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(itemService.getItem(id));
-        }
-        catch (EntityNotFoundException ex){
+        } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Item with a given id was not found.");
         }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createItem(@RequestBody Item newItem){
-        try{
+    public ResponseEntity<?> createItem(@Valid @RequestBody Item newItem, BindingResult bindingResult) {
+        try {
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            }
             var item = itemService.createItem(newItem);
             var uri = String.format(BASE_URI + "/%d", item.getId());
             return ResponseEntity.created(URI.create(uri)).body(item);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("There were problems creating this item. Make sure the name is unique.");
         }
@@ -58,12 +61,11 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> changeAvailability(@PathVariable Long id,
-                                                @RequestParam Boolean isAvailable){
-        try{
+                                                @RequestParam Boolean isAvailable) {
+        try {
             Item item = itemService.changeAvailability(id, isAvailable);
             return ResponseEntity.ok(item);
-        }
-        catch (EntityNotFoundException ex){
+        } catch (EntityNotFoundException ex) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("Item with given id was not found.");

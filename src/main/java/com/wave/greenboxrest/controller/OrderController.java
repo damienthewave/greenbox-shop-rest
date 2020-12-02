@@ -7,7 +7,6 @@ import com.wave.greenboxrest.model.summary.SessionSummary;
 import com.wave.greenboxrest.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;

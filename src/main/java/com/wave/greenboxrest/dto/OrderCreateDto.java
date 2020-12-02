@@ -1,7 +1,6 @@
 package com.wave.greenboxrest.dto;
 
 import lombok.Getter;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;

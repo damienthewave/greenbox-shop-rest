@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
@@ -20,17 +21,18 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotBlank
     @Column(unique = true)
     private String name;
 
-    @NotNull
+    @Positive
     private Double price;
 
     private String description;
 
     private boolean isAvailable = true;
 
+    @NotNull
     private ItemCollectionType collectionType;
 
 }

@@ -41,7 +41,7 @@ public class OrderService {
 
     public Order createOrder(OrderCreateDto orderDto) {
         Set<Position> positions = new HashSet<>();
-        var order = Order.builder()
+        Order order = Order.builder()
                 .personName(orderDto.personName)
                 .address(orderDto.address)
                 .phoneNumber(orderDto.phoneNumber)
