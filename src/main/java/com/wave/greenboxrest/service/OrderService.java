@@ -2,6 +2,8 @@ package com.wave.greenboxrest.service;
 
 import com.wave.greenboxrest.dto.OrderCreateDto;
 import com.wave.greenboxrest.dto.PositionCreateDto;
+import com.wave.greenboxrest.exception.ItemNotAvailableException;
+import com.wave.greenboxrest.exception.ItemNotFoundException;
 import com.wave.greenboxrest.model.Item;
 import com.wave.greenboxrest.model.Order;
 import com.wave.greenboxrest.model.Position;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,20 +26,20 @@ public class OrderService {
 
     private final ItemRepository itemRepository;
 
-    public List<Order> getNotCompleted(){
+    public List<Order> getNotCompleted() {
         return orderRepository.getAllByIsCompleted(false);
     }
 
-    public Order getOrder(Long id){
+    public Order getOrder(Long id) {
         return orderRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(id));
     }
 
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
 
-    public Order createOrder(OrderCreateDto orderDto){
+    public Order createOrder(OrderCreateDto orderDto) {
         Set<Position> positions = new HashSet<>();
         var order = Order.builder()
                 .personName(orderDto.personName)
@@ -44,12 +47,11 @@ public class OrderService {
                 .phoneNumber(orderDto.phoneNumber)
                 .orderComment(orderDto.orderComment)
                 .build();
-        for(PositionCreateDto positionDto: orderDto.positions){
+        for (PositionCreateDto positionDto : orderDto.positions) {
             Item item = itemRepository.findById(positionDto.itemId)
-                    .orElseThrow(EntityNotFoundException::new);
-            if(!item.isAvailable()){
-                throw new EntityNotFoundException("Item with id " +
-                        positionDto.itemId + " is not available");
+                    .orElseThrow(() -> new ItemNotFoundException(positionDto.itemId));
+            if (!item.isAvailable()) {
+                throw new ItemNotAvailableException(positionDto.itemId);
             }
             var position = new Position(order, item, positionDto.amount);
             positions.add(position);
@@ -58,13 +60,13 @@ public class OrderService {
         return orderRepository.saveAndFlush(order);
     }
 
-    public void deleteOrder(Long id){
+    public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
 
-    public Order completeOrder(Long id){
+    public Order completeOrder(Long id) {
         var order = orderRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new ItemNotFoundException(id));
         order.setCompleted(true);
         return orderRepository.saveAndFlush(order);
     }

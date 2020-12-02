@@ -1,5 +1,8 @@
 package com.wave.greenboxrest.dto;
 
+import lombok.Getter;
+import org.springframework.validation.annotation.Validated;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -21,6 +24,7 @@ public class OrderCreateDto {
     public String orderComment;
 
     @NotEmpty(message = "Position list cannot be empty")
+    @Getter
     public List<@Valid PositionCreateDto> positions;
 
 }   

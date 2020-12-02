@@ -1,23 +1,21 @@
 package com.wave.greenboxrest.controller;
 
 import com.wave.greenboxrest.dto.OrderCreateDto;
+import com.wave.greenboxrest.exception.ItemNotFoundException;
 import com.wave.greenboxrest.model.Order;
 import com.wave.greenboxrest.model.summary.SessionSummary;
 import com.wave.greenboxrest.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -53,16 +51,17 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderCreateDto orderDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
         try {
-            var order = orderService.createOrder(orderDto);
+            if (bindingResult.hasErrors()) {
+                return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
+            }
+            Order order = orderService.createOrder(orderDto);
             String uri = String.format(BASE_URI + "/%d", order.getId());
             return ResponseEntity.created(URI.create(uri)).body(order);
-        } catch (EntityNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ex.getMessage());
+        } catch (ItemNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
